@@ -1,7 +1,9 @@
 ascii-invaders
 ==============
 
-An ASCII-art game like Space Invaders
+An ASCII-art game like Space Invaders using Curses.
+
+(c) 2001, 2013 Thomas Munro
 
 This is short bit of C code I wrote back in 2001 and published on my
 erstwhile home page:
@@ -17,8 +19,8 @@ I really must get around to fixing this.  It should probably use select
 for timing instead signals.
 
 I am embarassed to admit that I did not do anything with several patches
-that people have sent me by email over the years to make it work on 
-various platforms.   Sorry!
+that people have sent me by email over the years in the pre-Github era 
+to make it work on various platforms.   Sorry!
 
 artwork
 =======
