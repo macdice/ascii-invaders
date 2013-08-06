@@ -22,12 +22,14 @@
  * $Id: invaders.c,v 1.20 2002/07/21 21:52:13 munro Exp $
  */
 
+#include "invaders.h"
+
 #include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/signal.h>
-#include "invaders.h"
+#include <time.h>
 
 char *alienBlank =  "      ";
 char *alien30[] = { " {@@} ",
@@ -242,7 +244,7 @@ void paintShelters() {
  * around the screen.
  */
 void handleTimer(int signal) {
-    int i, x;
+    int x;
     struct Bomb *b;
 
 //fprintf(stderr, "alien empty rows: %d %d %d %d\n", aliens.emptyLeft, aliens.emptyRight, aliens.emptyTop, aliens.emptyBottom);
