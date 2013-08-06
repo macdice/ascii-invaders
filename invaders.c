@@ -79,6 +79,8 @@ const char *bombAnim =   "\\|/-";
 
 // We have to use global variables becase our main loop is driven by
 // an alarm signal - so we put them into tidy structures.
+// TODO!  Define the structs, but declare the game state objects on
+// the stack of main.  Down with globalisation!
 
 struct {
     int score;
@@ -175,6 +177,11 @@ int main(int argc, char **argv) {
     paintIntro();
     game.state = STATE_INTRO;
 
+    // TODO!
+    // Instead of registering handleTime here, we should use select
+    // to wait for a key with a timeout, and run handleTimer when
+    // enough time for one frame has elapsed.
+
     // set up realtime interrupt timer and signals
     game.myTimer.it_value.tv_sec = 0;
     game.myTimer.it_value.tv_usec = 1000000 / FPS;
@@ -245,10 +252,11 @@ void paintShelters() {
  * around the screen.
  */
 void handleTimer(int signal) {
+    // TODO!  This should take a pointer to the game state, which points
+    // to object on the stack of main, instead of accessing evil
+    // global variables.
     int x;
     struct Bomb *b;
-
-//fprintf(stderr, "alien empty rows: %d %d %d %d\n", aliens.emptyLeft, aliens.emptyRight, aliens.emptyTop, aliens.emptyBottom);
 
     // check which state the game is in
     if (game.state == STATE_INTRO) {
@@ -489,9 +497,6 @@ void handleTimer(int signal) {
         if (gun.missile.y < LINES - 1 - GUNNER_HEIGHT 
                 && gun.missile.y >= LINES - 1 - GUNNER_HEIGHT 
                 - SHELTER_HEIGHT) {
-/*fprintf(stderr, "hit shield (%d)\n", 
-shields[((missileY - (LINES - 1 - GUNNER_HEIGHT - SHELTER_HEIGHT))
-* screenCols) + missileX]);*/
             if (gun.shields[((gun.missile.y - (LINES - 1 - GUNNER_HEIGHT 
                     - SHELTER_HEIGHT))
                     * game.screenCols) + gun.missile.x] != ' ') {
@@ -577,7 +582,6 @@ void moveAliensDown() {
         }
         paintShelters();
     }
-//fprintf(stderr, "lastline = %d, gunnerTop = %d\n", lastLine, gunnerTop);
     if (lastLine == gunnerTop) {
         // blow up gunner if not already blowing up
         if (game.state != STATE_EXPLODE) {
