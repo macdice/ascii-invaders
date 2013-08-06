@@ -31,50 +31,51 @@
 #include <sys/signal.h>
 #include <time.h>
 
-char *alienBlank =  "      ";
-char *alien30[] = { " {@@} ",
-                    " /\"\"\\ ",
-                    "      ",
-                    " {@@} ",
-                    "  \\/  ",
-                    "      " };
+const char *alienBlank =  "      ";
+const char *alien30[] = { " {@@} ",
+                          " /\"\"\\ ",
+                          "      ",
+                          " {@@} ",
+                          "  \\/  ",
+                          "      " };
 
-char *alien20[] = { " dOOb ",
-                    " ^/\\^ ",
-                    "      ",
-                    " dOOb ",
-                    " ~||~ ",
-                    "      " };
+const char *alien20[] = { " dOOb ",
+                          " ^/\\^ ",
+                          "      ",
+                          " dOOb ",
+                          " ~||~ ",
+                          "      " };
 
-char *alien10[] = { " /MM\\ ",
-                    " |~~| ",
-                    "      ",
-                    " /MM\\ ",
-                    " \\~~/ ",
-                    "      " };
+const char *alien10[] = { " /MM\\ ",
+                          " |~~| ",
+                          "      ",
+                          " /MM\\ ",
+                          " \\~~/ ",
+                          "      " };
 
-char *alienMa[] = { "_/MM\\_",
-                    "qWAAWp" };
+const char *alienMa[] = { "_/MM\\_",
+                          "qWAAWp" };
 
-char *gunner[]  = { "  mAm  ",
-                    " MAZAM " };
+const char *gunner[]  = { "  mAm  ",
+                          " MAZAM " };
 
-char *gunnerExplode[]  = { 
-                    " ,' %  ",
-                    " ;&+,! ",
-                    " -,+$! ",
-                    " +  ^~ " };
+const char *gunnerExplode[]  = { 
+                          " ,' %  ",
+                          " ;&+,! ",
+                          " -,+$! ",
+                          " +  ^~ " };
 
-char *alienExplode[] = { 
-                    " \\||/ ",
-                    " /||\\ ",
-                    "      " };
+const char *alienExplode[] = { 
+                         " \\||/ ",
+                         " /||\\ ",
+                         "      " };
 
-char *shelter[] = { "/MMMMM\\",
-                    "MMMMMMM",
-                    "MMM MMM" };
+const char *shelter[] = { 
+                         "/MMMMM\\",
+                         "MMMMMMM",
+                         "MMM MMM" };
 
-char *bombAnim =    "\\|/-";
+const char *bombAnim =   "\\|/-";
 
 // We have to use global variables becase our main loop is driven by
 // an alarm signal - so we put them into tidy structures.
