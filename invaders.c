@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- * http://www.ip9.org/munro/invaders
+ * https://github.com/macdice/ascii-invaders
  * Thomas Munro <munro@ip9.org>
  *
  * $Id: invaders.c,v 1.20 2002/07/21 21:52:13 munro Exp $
@@ -823,7 +823,7 @@ void paintIntro() {
 #ifdef USE_COLORS
     if (has_colors()) attron(COLOR_PAIR(1));
 #endif
-    mvprintw(LINES - 1, (COLS / 2) - 15, "http://www.ip9.org/munro/invaders");
+    mvprintw(LINES - 1, (COLS - 41) / 2, "https://github.com/macdice/ascii-invaders");
     refresh();
 }
 
