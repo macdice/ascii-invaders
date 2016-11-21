@@ -1,4 +1,4 @@
-CFLAGS=-Wall
+CFLAGS+=-Wall
 LIBS=-lcurses
 
 all:	ascii_invaders
