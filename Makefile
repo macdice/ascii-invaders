@@ -7,5 +7,4 @@ clean:
 	rm -f invaders.o ascii_invaders
 
 ascii_invaders: invaders.o
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) invaders.o -o ascii_invaders
-
+	$(CC) $(CFLAGS) $(LDFLAGS) invaders.o $(LIBS) -o ascii_invaders
