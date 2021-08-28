@@ -29,6 +29,10 @@ struct Bomb {
     struct Bomb *next;
 };
 
+typedef struct Sprite {
+  const char *lines[4];
+} Sprite;
+
 /* To make this compile under Darwin/BSD I have to comment these, until
    I figure out how to fix this problem (may involve not using apple's curses
    implementation). */
@@ -42,9 +46,20 @@ struct Bomb {
 #define FPS 15          // frames per second
 #define PAINT_WAIT 2    // how many frames between row repaints
 
+#define ASCII 0
+#define UNICODE 1
+
+/* Sprites. */
+#define SHELTER 8
+#define ALIEN_EXPLODE 7
+#define GUNNER_EXPLODE 6
+#define GUNNER 5
+#define MA 4
 #define ALIEN30 3
 #define ALIEN20 2
 #define ALIEN10 1
+
+/* Special alien table values. */
 #define ALIEN_EMPTY 0
 #define ALIEN_EXPLODE1 -1
 #define ALIEN_EXPLODE2 -2

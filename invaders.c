@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  * https://github.com/macdice/ascii-invaders
- * Thomas Munro <munro@ip9.org>
+ * Thomas Munro <thomas.munro@gmail.com>
  *
  * $Id: invaders.c,v 1.20 2002/07/21 21:52:13 munro Exp $
  */
@@ -25,57 +25,233 @@
 #include "invaders.h"
 
 #include <curses.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/signal.h>
 #include <time.h>
 
+static const Sprite sprites[][2][2] = {
+  [ALIEN30] = {
+    [ASCII] = {
+      {
+        {
+          " {@@} ",
+          " /\"\"\\ ",
+          "      "
+        }
+      },
+      {
+        {
+          " {@@} ",
+          "  \\/  ",
+          "      "
+        }
+      }
+    },
+    [UNICODE] = {
+      {
+        {
+          "⢀⡴⣿⢦⡀ ",
+          "⢈⢝⠭⡫⡁ ",
+          "      "
+        }
+      },
+      {
+        {
+          "⢀⡴⣿⢦⡀ ",
+          "⠨⡋⠛⢙⠅ ",
+          "      "
+        }
+      }
+    }
+  },
+  [ALIEN20] = {
+    [ASCII] = {
+      {
+        {
+          " dOOb ",
+          " ^/\\^ ",
+          "      "
+        }
+      },
+      {
+        {
+          " dOOb ",
+          " ~||~ ",
+          "      "
+        }
+      }
+    },
+    [UNICODE] = {
+      {
+        {
+          "⢀⡵⣤⡴⣅ ",
+          "⠏⢟⡛⣛⠏⠇",
+          "      "
+        }
+      },
+      {
+        {
+          "⣆⡵⣤⡴⣅⡆",
+          "⢘⠟⠛⠛⢟⠀",
+          "      "
+        }
+      }
+    },
+  },
+  [ALIEN10] = {
+    [ASCII] = {
+      {
+        {
+          " /MM\\ ",
+          " |~~| ",
+          "      "
+        }
+      },
+      {
+        {
+          " /MM\\ ",
+          " \\~~/ ",
+          "       "
+        }
+      }
+    },
+    [UNICODE] = {
+      {
+        {
+          "⣴⡶⢿⡿⢶⣦",
+          "⠩⣟⠫⠝⣻⠍",
+          "      "
+        }
+      },
+      {
+        {
+          "⣴⡶⢿⡿⢶⣦",
+          "⣉⠽⠫⠝⠯⣉",
+          "      "
+        }
+      }
+    }
+  },
+  [MA] = {
+    [ASCII] = {
+      {
+        {
+          "_/MM\\_",
+          "qWAAWp"
+        }
+      }
+    },
+    [UNICODE] = {
+      {
+        {
+          "⢀⡴⣾⢿⡿⣷⢦⡀",
+          "⠉⠻⠋⠙⠋⠙⠟⠉"
+        }
+      }
+    }
+  },
+  [GUNNER] = {
+    [ASCII] = {
+      {
+        {
+          "  mAm  ",
+          " MAZAM "
+        }
+      }
+    },
+    [UNICODE] = {
+      {
+        {
+          " ⢀⣀⣾⣷⣀⡀ ",
+          " ⣿⣿⣿⣿⣿⣿ "
+        }
+      }
+    }
+  },
+  [GUNNER_EXPLODE] = {
+    [ASCII] = {
+      {
+        {
+          " ,' %  ",
+          " ;&+,! "
+        }
+      },
+      {
+        {
+          " -,+$! ",
+          " +  ^~ "
+        }
+      }
+    },
+    [UNICODE] = {
+      /* TODO */
+      {
+        {
+          " ,' %  ",
+          " ;&+,! "
+        }
+      },
+      {
+        {
+          " -,+$! ",
+          " +  ^~ "
+        }
+      }
+    }
+  },
+  [ALIEN_EXPLODE] = {
+    [ASCII] = {
+      {
+        {
+          " \\||/ ",
+          " /||\\ ",
+          "       "
+        }
+      }
+    },
+    [UNICODE] = {
+      /* TODO */
+      {
+        {
+          " \\||/ ",
+          " /||\\ ",
+          "       "
+        }
+      }
+    }
+  },
+  [SHELTER] = {
+    [ASCII] = {
+      {
+        {
+          "/MMMMM\\",
+          "MMMMMMM",
+          "MMM MMM"
+        }
+      }
+    },
+    [UNICODE] = {
+      /* TODO */
+      {
+        {
+          "/MMMMM\\",
+          "MMMMMMM",
+          "MMM MMM"
+        }
+      }
+    }
+  }
+};
+
 const char *alienBlank =  "      ";
-const char *alien30[] = { " {@@} ",
-                          " /\"\"\\ ",
-                          "      ",
-                          " {@@} ",
-                          "  \\/  ",
-                          "      " };
-
-const char *alien20[] = { " dOOb ",
-                          " ^/\\^ ",
-                          "      ",
-                          " dOOb ",
-                          " ~||~ ",
-                          "      " };
-
-const char *alien10[] = { " /MM\\ ",
-                          " |~~| ",
-                          "      ",
-                          " /MM\\ ",
-                          " \\~~/ ",
-                          "      " };
-
-const char *alienMa[] = { "_/MM\\_",
-                          "qWAAWp" };
-
-const char *gunner[]  = { "  mAm  ",
-                          " MAZAM " };
-
-const char *gunnerExplode[]  = { 
-                          " ,' %  ",
-                          " ;&+,! ",
-                          " -,+$! ",
-                          " +  ^~ " };
-
-const char *alienExplode[] = { 
-                         " \\||/ ",
-                         " /||\\ ",
-                         "      " };
-
-const char *shelter[] = { 
-                         "/MMMMM\\",
-                         "MMMMMMM",
-                         "MMM MMM" };
 
 const char *bombAnim =   "\\|/-";
+
+static int ctype = ASCII;
 
 // We have to use global variables becase our main loop is driven by
 // an alarm signal - so we put them into tidy structures.
@@ -143,6 +319,11 @@ void freeBombs();
 void moveAliensDown();
 
 int main(int argc, char **argv) {
+
+    if (argc > 1 && strcmp(argv[1], "--unicode") == 0) {
+	setlocale(LC_CTYPE, "");
+	ctype = UNICODE;
+    }
 
     // set up curses library
     initscr();
@@ -340,7 +521,7 @@ void handleTimer(int signal) {
             // ma is grooving across the top of the screen
             ma.x--;
             for (i = 0; i < MA_HEIGHT; i++)
-                mvprintw(2 + i, ma.x, "%s ", alienMa[i]);
+                mvprintw(2 + i, ma.x, "%s ", sprites[MA][ctype][0].lines[i]);
             refresh();
             // if we have reach the edge then remove ma
             if (ma.x == 0) {
@@ -658,10 +839,9 @@ void paintGunner() {
     for (i = 0; i < GUNNER_HEIGHT; i++) {
         move(LINES - GUNNER_HEIGHT + i, gun.x - (GUNNER_WIDTH / 2));
         if (game.state == STATE_PLAY) {
-            printw("%s", gunner[i]);
+            printw("%s", sprites[GUNNER][ctype][0].lines[i]);
         } else if (game.state == STATE_EXPLODE) {
-            printw("%s", gunnerExplode[i + (GUNNER_HEIGHT 
-                            * ((game.timer / 4) % 2))]);
+          printw("%s", sprites[GUNNER_EXPLODE][ctype][(game.timer / 4) % 2].lines[i]);
         }
     }
 }
@@ -673,7 +853,7 @@ void paintExplodingAlien(int y, int x) {
             + (y > aliens.paintRow ? aliens.direction : 0));    
                 // adjustment because of
                 // alien drawing technique
-        printw("%s", alienExplode[i]);
+        printw("%s", sprites[ALIEN_EXPLODE][ctype][0].lines[i]);
     }
 }
 
@@ -733,20 +913,15 @@ void paintAlienRow(int row, int clean) {
 
     // draw the aliens
     for (x = aliens.emptyLeft; x < aliens.emptyRight; x++) {
-        int line = ALIEN_HEIGHT * aliens.anim;
         int alien = aliens.table[(row * aliens.cols) + x];
         for (i = 0; i < ALIEN_HEIGHT; i++) {
             move((row * ALIEN_HEIGHT) + aliens.y + i, 
                     (x * ALIEN_WIDTH) + aliens.x);
             switch (alien) {
                 case ALIEN10:
-                    printw("%s", alien10[line + i]);
-                    break;
                 case ALIEN20:
-                    printw("%s", alien20[line + i]);
-                    break;
                 case ALIEN30:
-                    printw("%s", alien30[line + i]);
+                    printw("%s", sprites[alien][ctype][aliens.anim].lines[i]);
                     break;
                 case ALIEN_EXPLODE1:
                     //printw("%s", alienExplode[i]);
@@ -767,7 +942,7 @@ void paintAlienRow(int row, int clean) {
         }
     }
 }
-    
+
 void initGame() {
 
     // how many aliens?
@@ -801,23 +976,23 @@ void paintIntro() {
 #ifdef USE_COLORS
     if (has_colors()) attron(COLOR_PAIR(2));
 #endif
-    mvprintw( 9, (COLS / 2) - 8, alienMa[0]);
-    mvprintw(10, (COLS / 2) - 8, alienMa[1]);
+    mvprintw( 9, (COLS / 2) - 8, sprites[MA][ctype][0].lines[0]);
+    mvprintw(10, (COLS / 2) - 8, sprites[MA][ctype][0].lines[1]);
 #ifdef USE_COLORS
     if (has_colors()) attron(COLOR_PAIR(4));
 #endif
     mvprintw( 9, (COLS / 2), "= ?  points");
 
-    mvprintw(12, (COLS / 2) - 8, alien30[0]);
-    mvprintw(13, (COLS / 2) - 8, alien30[1]);
+    mvprintw(12, (COLS / 2) - 8, sprites[ALIEN30][ctype][0].lines[0]);
+    mvprintw(13, (COLS / 2) - 8, sprites[ALIEN30][ctype][0].lines[1]);
     mvprintw(12, (COLS / 2), "= 30 points");
 
-    mvprintw(15, (COLS / 2) - 8, alien20[0]);
-    mvprintw(16, (COLS / 2) - 8, alien20[1]);
+    mvprintw(15, (COLS / 2) - 8, sprites[ALIEN20][ctype][0].lines[0]);
+    mvprintw(16, (COLS / 2) - 8, sprites[ALIEN20][ctype][0].lines[1]);
     mvprintw(15, (COLS / 2), "= 20 points");
 
-    mvprintw(18, (COLS / 2) - 8, alien10[0]);
-    mvprintw(19, (COLS / 2) - 8, alien10[1]);
+    mvprintw(18, (COLS / 2) - 8, sprites[ALIEN10][ctype][0].lines[0]);
+    mvprintw(19, (COLS / 2) - 8, sprites[ALIEN10][ctype][0].lines[1]);
     mvprintw(18, (COLS / 2), "= 10 points");
 
 #ifdef USE_COLORS
@@ -848,7 +1023,7 @@ void resetAliens() {
     aliens.emptyLeft = aliens.emptyTop = 0;
     aliens.emptyRight = aliens.cols;
     aliens.emptyBottom = aliens.rows;
-                           
+
     aliens.x = aliens.y = 0;
     aliens.direction = 1;
     aliens.paintWait = PAINT_WAIT;
@@ -871,8 +1046,9 @@ void resetShields() {
     for (x = 0; x < game.screenCols - 10; x += 10) {
         for (y = 0; y < SHELTER_HEIGHT; y++) {
             int i = 0;
-            while (shelter[y][i] != 0) {
-                gun.shields[(y * game.screenCols) + x + i] = shelter[y][i];
+            const Sprite *sprite = &sprites[SHELTER][ctype][0];
+            while (sprite->lines[y][i] != 0) {
+                gun.shields[(y * game.screenCols) + x + i] = sprite->lines[y][i];
                 i++;
             }
         }
@@ -945,3 +1121,5 @@ void freeBombs() {
     while (aliens.headBomb)
         removeBomb(aliens.headBomb);
 }
+
+/* mode: C; indent-tabs-mode: nil; tab-width: 4 */

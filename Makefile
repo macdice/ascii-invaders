@@ -1,3 +1,4 @@
+#CC=gcc
 CFLAGS+=-Wall
 LIBS=-lcurses
 
