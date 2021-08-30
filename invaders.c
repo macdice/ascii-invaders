@@ -140,8 +140,8 @@ static const Sprite sprites[][2][2] = {
     [ASCII] = {
       {
         {
-          "_/MM\\_",
-          "qWAAWp"
+          "_/MMM\\_",
+          "qWAVAWp"
         }
       }
     },
@@ -976,8 +976,8 @@ void paintIntro() {
 #ifdef USE_COLORS
     if (has_colors()) attron(COLOR_PAIR(2));
 #endif
-    mvprintw( 9, (COLS / 2) - 8, sprites[MA][ctype][0].lines[0]);
-    mvprintw(10, (COLS / 2) - 8, sprites[MA][ctype][0].lines[1]);
+    mvprintw( 9, (COLS / 2) - 9, sprites[MA][ctype][0].lines[0]);
+    mvprintw(10, (COLS / 2) - 9, sprites[MA][ctype][0].lines[1]);
 #ifdef USE_COLORS
     if (has_colors()) attron(COLOR_PAIR(4));
 #endif
