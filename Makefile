@@ -1,6 +1,6 @@
 #CC=gcc
 CFLAGS+=-Wall
-LIBS=-lcurses
+LIBS=-lncursesw
 
 all:	ascii_invaders
 
